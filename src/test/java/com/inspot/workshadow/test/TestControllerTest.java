@@ -1,21 +1,23 @@
 package com.inspot.workshadow.test;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+
+import javax.inject.Inject;
+import javax.sql.DataSource;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.RequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -41,16 +43,32 @@ public class TestControllerTest {
 	
 	@Test
 	public void testTestController() throws Exception {
-		RequestBuilder reqBuilder = MockMvcRequestBuilders.get("/test/1")
-				.contentType(MediaType.TEXT_HTML);
-        MvcResult result = mockMvc.perform(reqBuilder)
-        		.andExpect(status().isOk())
-        		.andExpect(model().attributeExists("objname"))
-        		.andDo(print())
-        		.andReturn();
-//        String body = result.getResponse().getContentAsString();
-//        System.out.println("BODY : " + body);
-//        assertTrue(body.contains("OK"));
+        
+        this.mockMvc.perform(get("/test/1"))
+			.andExpect(status().isOk())
+			.andExpect(model().attributeExists("objname"));
 	}
 
+	// DB 연결 테스트 
+	// http://localhost:8080/workshadow/test/db
+	@Test
+	public void testDB() throws Exception {
+		this.mockMvc.perform(get("/test/db"))
+			.andExpect(status().isOk());
+	}
+	
+	// mybatis 연결 테스트.
+	@Test
+	public void testMybatis() throws Exception {
+		this.mockMvc.perform(get("/test/mybatis"))
+			.andExpect(status().isOk());
+	}
+
+	// mybatis로 TEST 테이블 셀렉트테스트.
+	@Test
+	public void testMybatisSelect() throws Exception {
+		this.mockMvc.perform(get("/test/selecttest"))
+			.andExpect(status().isOk());
+	}
+	
 }

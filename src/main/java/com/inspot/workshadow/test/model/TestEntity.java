@@ -7,6 +7,6 @@ import lombok.Data;
 @Builder
 public class TestEntity {
 	private String name;
-	
-	
+	private String id;
+	private String pw;
 }
